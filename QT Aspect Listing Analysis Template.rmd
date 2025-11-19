@@ -1,0 +1,327 @@
+---
+title: "QT Aspect Listing Analysis Template"
+output: 
+  html_document:
+    df_print: paged 
+    toc: true
+    toc_depth: 4
+    toc_float: 
+      collapsed: true
+    code_folding: hide
+  html_notebook: 
+    toc: yes
+    toc_depth: '4'
+---
+
+# Loading in Data 
+* First, load in your data. We are loading in sample data generated from the provided Qualtrics survey. Our research team generated these responses--they are not real participant data. We use tidyverse to wrangle our data, so you must have that package installed.
+```{r message = FALSE, warning = FALSE}
+# Install tidyverse if you do not already have it installed
+if (!require("tidyverse")) {
+  print("You do not have tidyverse installed, installing the package now")
+  install.packages("tidyverse")
+}
+
+library(tidyverse)
+
+dat <- read.csv("Aspect Listing Demo_October 15, 2025_13.02.csv") # Replace this file with any data you generate on your own.
+
+dat <- dat[-c(1, 2), ] # The first two rows do not contian useful information, and are more or less copies of the header row number 3. 
+
+head(dat) 
+```
+
+* Note: In QT paradigms, there is often a "natural" and "unnatural" ordering". I.e. if respondents tend to prefer discounted choices, then making them list thoughts in support of accelerated choices first would be "unnatural" (and if these respondents listed thoughts in support of discounted choices first, that would be natural). You could then use the following code snippet if, say, the "delay" condition defined in our demo Qualtrics was the "natural" order.: 
+
+```{r  message = FALSE, warning = FALSE}
+## Note: You would need to define the treatment variable as an embedded data field in Qualtrics
+# dat$new_order[data$treatment=="control" & dat$condition =="delay"] <- "natural"
+# dat$new_order[data$treatment=="treatment" & dat$condition =="accelerate"] <- "natural"
+# dat$new_order[data$treatment=="control" & dat$condition =="accelerate"] <- "unnatural"
+# dat$new_order[data$treatment=="treatment" & dat$condition =="delay"] <- "unnatural"  
+```
+
+
+  
+# Processing Data
+  * Now we will walk through some brief steps of how you might process your data for sample analysis. After these steps, you will get a clean table listing each respondent's ID, each aspect they listed, whether each aspect supported the two meal voucher or one meal voucher (not that these labels are arbitrarily '9' and '5', respectively, as an artifact of the Qualtrics value assignment.)
+    * ADD WHERE THESE DATAFIELDS COME FROM (The QIDs..)
+```{r message = FALSE, warning = FALSE}
+# Please refer to our word doc for more information on the Qualtrics embedded data fields we load here. In short, numloops captures how many aspects were listed for each participant for each condition.s
+dat$numloops_combined <- rowSums(sapply(dat[,c("numloops_accelerate","numloops_delay","numloops_noorder")],as.numeric), na.rm = T)
+xref <- dat[,c("ResponseId","condition","numloops_accelerate","numloops_delay","numloops_noorder","numloops_combined","Q424")]
+
+list <- dat %>% dplyr::select (ResponseId, condition,
+                                # aspect - no order manipulation
+                                `X1_Q790`,`X2_Q790`,`X3_Q790`,`X4_Q790`,`X5_Q790`,`X6_Q790`,`X7_Q790`,`X8_Q790`,`X9_Q790`,`X10_Q790`,`X11_Q790`,`X12_Q790`,`X13_Q790`,`X14_Q790`,`X15_Q790`,`X16_Q790`,`X17_Q790`,`X18_Q790`,`X19_Q790`,`X20_Q790`,
+                               # aspect - accelerate
+                                `X1_Q854`,`X2_Q854`,`X3_Q854`,`X4_Q854`,`X5_Q854`,`X6_Q854`,`X7_Q854`,`X8_Q854`,`X9_Q854`,`X10_Q854`,`X11_Q854`,`X12_Q854`,`X13_Q854`,`X14_Q854`,`X15_Q854`,`X16_Q854`,`X17_Q854`,`X18_Q854`,`X19_Q854`,`X20_Q854`,
+                                # aspect - delay
+                                `X1_Q848`,`X2_Q848`,`X3_Q848`,`X4_Q848`,`X5_Q848`,`X6_Q848`,`X7_Q848`,`X8_Q848`,`X9_Q848`,`X10_Q848`,`X11_Q848`,`X12_Q848`,`X13_Q848`,`X14_Q848`,`X15_Q848`,`X16_Q848`,`X17_Q848`,`X18_Q848`,`X19_Q848`,`X20_Q848`,
+                                
+                                 # dependent variable - no order manipulation ( 5 = one meal; 9 = two meals; 10 = both; 11 = neither)
+                               `X1_Q888`,`X2_Q888`,`X3_Q888`,`X4_Q888`,`X5_Q888`,`X6_Q888`,`X7_Q888`,`X8_Q888`,`X9_Q888`,`X10_Q888`,`X21_Q888`,`X22_Q888`,`X23_Q888`,`X24_Q888`,`X25_Q888`,`X26_Q888`,`X27_Q888`,`X28_Q888`,`X29_Q888`,`X30_Q888`,
+                                
+                               # dependent variable - accelerate
+                                `X1_Q862`,`X2_Q862`,`X3_Q862`,`X4_Q862`,`X5_Q862`,`X6_Q862`,`X7_Q862`,`X8_Q862`,`X9_Q862`,`X10_Q862`,`X21_Q862`,`X22_Q862`, `X23_Q862`,`X24_Q862`,`X25_Q862`,`X26_Q862`,`X27_Q862`,`X28_Q862`,`X29_Q862`,`X30_Q862`,
+                               
+                                # dependent variable - delay
+                               `X1_Q874`,`X2_Q874`,`X3_Q874`,`X4_Q874`,`X5_Q874`,`X6_Q874`,`X7_Q874`,`X8_Q874`,`X9_Q874`,`X10_Q874`,`X21_Q874`,`X22_Q874`,`X23_Q874`,`X24_Q874`,`X25_Q874`,`X26_Q874`,`X27_Q874`,`X28_Q874`,`X29_Q874`,`X39_Q874`,
+                                
+                                
+                                # What choice did respondents make? Where choice 1 = one meal today; 2 = two meals in one week; 3 = I don't know or I can't decide
+                               `Q424`
+)
+
+# Change names in list to make things easier: 
+names(list) <- c("ResponseId","condition",
+                 "X1_asp_noOrder","X2_asp_noOrder","X3_asp_noOrder","X4_asp_noOrder",
+                 "X5_asp_noOrder","X6_asp_noOrder","X7_asp_noOrder","X8_asp_noOrder","X9_asp_noOrder","X10_asp_noOrder",
+                 "X11_asp_noOrder","X12_asp_noOrder","X13_asp_noOrder","X14_asp_noOrder","X15_asp_noOrder","X16_asp_noOrder",
+                 "X17_asp_noOrder","X18_asp_noOrder","X19_asp_noOrder","X20_asp_noOrder",
+                 "X1_asp_Accelerate","X2_asp_Accelerate","X3_asp_Accelerate","X4_asp_Accelerate",
+                 "X5_asp_Accelerate","X6_asp_Accelerate","X7_asp_Accelerate","X8_asp_Accelerate","X9_asp_Accelerate","X10_asp_Accelerate",
+                 "X11_asp_Accelerate","X12_asp_Accelerate","X13_asp_Accelerate","X14_asp_Accelerate","X15_asp_Accelerate","X16_asp_Accelerate",
+                 "X17_asp_Accelerate","X18_asp_Accelerate","X19_asp_Accelerate","X20_asp_Accelerate",
+                 "X1_asp_Delay","X2_asp_Delay","X3_asp_Delay","X4_asp_Delay",
+                 "X5_asp_Delay","X6_asp_Delay","X7_asp_Delay","X8_asp_Delay","X9_asp_Delay","X10_asp_Delay",
+                 "X11_asp_Delay","X12_asp_Delay","X13_asp_Delay","X14_asp_Delay","X15_asp_Delay","X16_asp_Delay",
+                 "X17_asp_Delay","X18_asp_Delay","X19_asp_Delay","X20_asp_Delay",
+                 "X1_dv_noOrder", "X2_dv_noOrder", "X3_dv_noOrder",
+                 "X4_dv_noOrder","X5_dv_noOrder","X6_dv_noOrder","X7_dv_noOrder","X8_dv_noOrder","X9_dv_noOrder","X10_dv_noOrder",
+                 "X11_dv_noOrder","X12_dv_noOrder","X13_dv_noOrder","X14_dv_noOrder","X15_dv_noOrder","X16_dv_noOrder","X17_dv_noOrder",
+                 "X18_dv_noOrder","X19_dv_noOrder","X20_dv_noOrder",
+                 "X1_dv_Accelerate","X2_dv_Accelerate","X3_dv_Accelerate",
+                 "X4_dv_Accelerate","X5_dv_Accelerate","X6_dv_Accelerate","X7_dv_Accelerate","X8_dv_Accelerate","X9_dv_Accelerate","X10_dv_Accelerate",
+                 "X11_dv_Accelerate","X12_dv_Accelerate","X13_dv_Accelerate","X14_dv_Accelerate","X15_dv_Accelerate","X16_dv_Accelerate","X17_dv_Accelerate",
+                 "X18_dv_Accelerate","X19_dv_Accelerate","X20_dv_Accelerate",
+                 "X1_dv_Delay","X2_dv_Delay","X3_dv_Delay",
+                 "X4_dv_Delay","X5_dv_Delay","X6_dv_Delay","X7_dv_Delay","X8_dv_Delay","X9_dv_Delay","X10_dv_Delay",
+                 "X11_dv_Delay","X12_dv_Delay","X13_dv_Delay","X14_dv_Delay","X15_dv_Delay","X16_dv_Delay","X17_dv_Delay",
+                 "X18_dv_Delay","X19_dv_Delay","X20_dv_Delay", "choice")
+
+## Make list prettier. We will be able to see how respondents rated each aspect on whether it supported one meal, two meals, both, or neither.
+backup <- list
+list <- list %>% pivot_longer(cols = -c("ResponseId","condition")) %>% filter(value !="")
+list$n <- NA
+list$n[grepl("1_",list$name)] <- 1
+list$n[grepl("2_",list$name)] <- 2
+list$n[grepl("3_",list$name)] <- 3
+list$n[grepl("4_",list$name)] <- 4
+list$n[grepl("5_",list$name)] <- 5
+list$n[grepl("6_",list$name)] <- 6
+list$n[grepl("7_",list$name)] <- 7
+list$n[grepl("8_",list$name)] <- 8
+list$n[grepl("9_",list$name)] <- 9
+list$n[grepl("10_",list$name)] <- 10
+list$n[grepl("11_",list$name)] <- 11
+list$n[grepl("12_",list$name)] <- 12
+list$n[grepl("13_",list$name)] <- 13
+list$n[grepl("14_",list$name)] <- 14
+list$n[grepl("15_",list$name)] <- 15
+list$n[grepl("16_",list$name)] <- 16
+list$n[grepl("17_",list$name)] <- 17
+list$n[grepl("18_",list$name)] <- 18
+list$n[grepl("19_",list$name)] <- 19
+list$n[grepl("20_",list$name)] <- 20
+
+list$type <- NA
+list$type[grepl("_asp",list$name)] <- "aspect"
+list$type[grepl("_dv",list$name)] <- "dv"
+list$type[grepl("choice",list$name)] <- "choice"
+
+list$a_d <- ifelse(grepl("Accelerate",list$name)==T,"a",ifelse(grepl("Delay",list$name)==T,"d","none"))
+list$accelerate_order <- factor(list$a_d, levels = c("a","d"),exclude = "none")
+list$delay_order <- factor(list$a_d, levels = c("d","a"),exclude = "none")
+list_0 <- list[list$condition=="control",]
+list_0$n_new <- list_0$n
+list_0_choice <- 
+  list %>% filter(condition == "control" & type == "choice") %>% 
+  group_by(ResponseId) %>% arrange(ResponseId, accelerate_order) %>% mutate(n_new = row_number())
+list_1_asp <-
+  list %>% filter(condition=="accelerate" & type == "aspect") %>%
+  group_by(ResponseId) %>% arrange(ResponseId, accelerate_order) %>% mutate(n_new = row_number())
+list_1_dv <-
+  list %>% filter(condition=="accelerate" & type == "dv") %>%
+  group_by(ResponseId) %>% arrange(ResponseId, accelerate_order) %>% mutate(n_new = row_number())
+list_1_choice <- 
+  list %>% filter(condition=="accelerate" & type == "choice") %>%
+  group_by(ResponseId) %>% arrange(ResponseId, accelerate_order) %>% mutate(n_new = row_number())
+list_2_asp <-
+  list %>% filter(condition=="delay" & type == "aspect") %>%
+  group_by(ResponseId) %>% arrange(ResponseId, delay_order) %>% mutate(n_new = row_number())
+list_2_dv <-
+  list %>% filter(condition=="delay" & type == "dv") %>%
+  group_by(ResponseId) %>% arrange(ResponseId, delay_order) %>% mutate(n_new = row_number())
+list_2_choice <-
+  list %>% filter(condition=="delay" & type == "choice") %>%
+  group_by(ResponseId) %>% arrange(ResponseId, delay_order) %>% mutate(n_new = row_number())
+
+list <- rbind(list_0, list_0_choice, list_1_asp,list_1_dv, list_1_choice, list_2_asp, list_2_dv, list_2_choice)
+
+list <- list %>%
+  pivot_wider(id_cols = c("ResponseId","condition","n_new"), names_from = "type", values_from = "value")
+
+# filter out any aspects that should not count - including when "9" is entered
+
+list %>% mutate(ln = nchar(aspect)) %>% filter(ln <5) %>% group_by(aspect) %>% summarise(n=n()) %>% print(n=45)
+
+list <- list %>% filter(aspect != "9")
+list <- list %>% filter(aspect != "99")
+list <- list %>% filter(aspect != "0")
+list <- list %>% filter(aspect != "\"9\"")
+list <- list %>% filter(aspect != "N/A")
+list <- list %>% filter(aspect != "N/a")
+
+
+# We will also recode the dv's. These use abstract qualtrics values, where 9 is "It (the thought) was in favor of redeeming two free meals one week from today" and '5' is "It was in favor of redeeming one free meal today".
+
+list <- list %>% 
+  mutate(dv = case_when(
+    dv == 9 ~ "It was in favor of redeeming two free meals one week from today", 
+    dv == 5 ~ "It was in favor of redeeming one free meal today", 
+    dv == 11 ~ "It was in favor of both", 
+    dv == 13 ~ "It was in favor of neither", 
+    TRUE ~ as.character(dv)
+  ))
+
+# Look at that pretty list! 
+list
+
+
+```
+# Summary statistics
+
+```{r}
+# mean + SE number of aspects listed per condition
+list %>% 
+  group_by(condition, ResponseId) %>%
+  summarize(n = max(n_new), .ungroup = TRUE) %>% 
+  group_by(condition) %>% 
+  summarize(mean = mean(n, na.rm = TRUE), se = sd(n, na.rm = TRUE) / sqrt(n())) # Our se is NA since there is only one participant in each condition.
+```
+
+
+# Sample Analysis
+* Is Choice predicted by thought-listing order?
+```{r message = FALSE, warning = FALSE}
+# Visualize: 
+list %>%
+  select(-n_new, -aspect, -dv) %>% 
+  group_by(ResponseId) %>%
+  summarize(condition = first(condition), 
+            choice = mean(as.numeric(choice), na.rm = TRUE), .groups = "drop") %>% 
+  mutate(choice_label = case_when(
+           choice == 1 ~ "one meal",
+           choice == 2 ~ "two meals",
+           choice == 3 ~ "IDK",
+           TRUE ~ as.character(choice)
+    )) %>% 
+  ggplot(aes(choice_label, fill = condition)) + 
+  geom_histogram(aes(y = ..count../sum(..count..)), stat = "count") + 
+  facet_wrap(~condition) + 
+  ylab("Proportion of Participants") + 
+  xlab("Voucher Chosen") 
+  
+# You could imagine that given more data, we might perform a chi-square test to see if the preference towards a particular voucher is influenced by the order in which participants were assigned to list their thoughts. 
+```
+
+# Proportion of Impatient Thoughts Analysis
+* The hypothesis of this analysis is that respondents in the accelerate aka the "list reasons to redeem one meal voucher today" first condition will list more thoughts in favor of redeeming this voucher than respondents in other conditions. 
+
+```{r}
+# calculate proportion of support-increasing over total & over subset
+prop <- list %>%
+  group_by(ResponseId) %>%
+  summarise(
+    dv_support_Acc = sum(dv == "It was in favor of redeeming one free meal today"),
+    dv_n_AccDel = sum(dv == "It was in favor of redeeming one free meal today") + sum(dv == "It was in favor of redeeming two free meals one week from today"),
+    prop_SupportAcc_ofTotal_dv = dv_support_Acc / n(),
+    prop_SupportAcc_ofID_dv = dv_support_Acc / dv_n_AccDel,
+    .groups = 'drop'  # This drops the grouping after summarisation
+  ) %>%
+  mutate(prop_SupportAcc_ofID_dv = ifelse(is.na(prop_SupportAcc_ofID_dv), 0, prop_SupportAcc_ofID_dv))
+
+prop <- 
+  prop %>% left_join(xref, by = c("ResponseId" = "ResponseId"))
+
+prop_summary <- prop %>%
+  group_by(condition) %>%
+  summarise(
+    mean = mean(prop_SupportAcc_ofID_dv, na.rm = TRUE),
+    se   = sd(prop_SupportAcc_ofID_dv, na.rm = TRUE) / sqrt(n()),
+    .groups = "drop"
+  )
+
+
+# Plot: 
+ggplot(prop_summary, aes(x = condition, y = mean, fill = condition)) + 
+  geom_col() +
+  geom_errorbar(aes(  # This would add error bars, if there were more than one participant per condition
+    ymin = mean - se,
+    ymax = mean + se
+  ), 
+   width = 0.2, linewidth = 0.7)+ 
+  ylab("Proportion of Impatient Thoughts") + 
+  theme_bw()
+
+# You could imagine then performing some statistical analysis, like ANOVA, a linear model, or some non-parametric alternative to find if the differences across conditions is significant. 
+```
+
+# SMRD Analysis 
+* This is one of the analyses you will find in Weber et al.'s (2007) Assymetric Discounting paper. In that paper, they "
+measured thought clustering using the standardized median rank difference: SMRD 5 2(MRp – MRi)/n, where MRp is themedian rank of patient thoughts, MRi is the median rank of impatient thoughts, and n is the total number of thoughts". 
++ Positive numbers would indicate that participants listed reasons in support of the one meal voucher today option first. Negative numbers would indicate that they listed reasons in support of the two meal voucher in one week from today optin first. 
++ In the case of the Assymmetric Discounting paper, SMRD was calculated when respondnets were not given an order manipulation, i.e. they weren't told an option to list reasons in support of first. This is most analagous to our "control" condition, so we will only compute SMRD here. There is only one respondent in this condition in our sample data. 
+
+```{r}
+smrd_dv <-
+  list %>% dplyr::select(-c("aspect")) %>%
+  filter(condition == "control") %>% 
+  filter(dv=="It was in favor of redeeming one free meal today" | dv == "It was in favor of redeeming two free meals one week from today") %>% group_by(ResponseId) %>%
+  dplyr::mutate(Aspect_Adj = 1:n()) %>% #Rerank aspects as both/neithers now removed
+  dplyr::mutate(N_Aspects = n()) %>% #Renumber total aspects per P
+  ungroup() %>% mutate(dv = dplyr::if_else(dv=="It was in favor of redeeming one free meal today","Accelerate","Delay")) %>%
+  spread(dv, Aspect_Adj) %>%
+  group_by(ResponseId) %>% 
+  dplyr::mutate(SMRD = if(all(is.na(Accelerate))) -1 # Calculate SMRD. Per CDL, Ps who only have one type of thought get coded as 1 or -1, else calculate SMRD.
+                else if (all(is.na(Delay))) 1
+                else (2*(median(Delay, na.rm=T) - median(Accelerate,na.rm=T))/(N_Aspects))) %>%
+  ungroup %>%
+  dplyr::select(ResponseId, SMRD, N_Aspects) %>% unique() %>% 
+  left_join(xref,by = c("ResponseId"="ResponseId"))
+
+id_tofix <- unique(list$ResponseId)[!(unique(list$ResponseId) %in% smrd_dv$ResponseId)]
+list %>% filter(ResponseId %in% id_tofix) %>% dplyr::select(dv) %>% unique() # confirm that these do not have any 1s or 2s
+smrd_dv_fixes <- 
+  list %>% filter(condition == "control") %>% filter(ResponseId %in% id_tofix) %>% group_by(ResponseId) %>% summarise(SMRD = 0, N_Aspects = 0) %>%
+  left_join(xref, by = c("ResponseId"="ResponseId"))
+
+smrd_dv <- rbind(smrd_dv,smrd_dv_fixes)
+
+# SMRD = 2(MRd – MRi)/n
+# MRd is the median rank of decreasing support thoughts, 
+# MRi is the median rank of increasing support thoughts, and n is the total number of thoughts that increase or decrease support. 
+# Randomly interspersed thoughts produce an SMRD of zero.
+
+smrd_summary <- smrd_dv %>% 
+  group_by(condition) %>% 
+  summarise(m_SMRD = mean(SMRD), sd = sd(SMRD), se = sqrt(sd)/n()) %>%
+  mutate(
+    ymin = m_SMRD - se,
+    ymax = m_SMRD + se
+  )
+smrd_summary
+
+# Make a plot: 
+ggplot(smrd_summary, aes(x = condition, y = m_SMRD, fill = condition)) + 
+  geom_col(color = "black") + # Note that in our sample data, the control condition had a mean sMRD of 0. 
+  geom_errorbar(aes(ymin = ymin, ymax = ymax), width = 0.2) + # Error bars. If there were more than one participant in the control condition, this would be visible. 
+  labs(title = "SMRD with Error Bars",
+       x = "Condition",
+       y = "Mean Value") +
+  theme_minimal()
+
+
+```
+
