@@ -23,14 +23,7 @@ participants are asked to type their thoughts as they evaluate decision
 options. Our Qualtrics survey setup saves these open-ended responses, so
 that they are retrievable for further experimental questions. For
 example, you may ask "On a scale of 1-7, how much does \[Thought J\]
-support \[Option K\]" and so on.\
-\
-The gif below demonstrates the aspect-listing interface. You can also
-play around with this interface in the provided .qsf file:
-Aspect_Listing_Demo.qsf.
-
-![](media/image1.gif){width="5.989361329833771in"
-height="3.2058442694663167in"}
+support \[Option K\]", and so on.
 
 The ability to save each respondent's individual thoughts is powerful:
 researchers can design questions to explore diverse aspects of
@@ -44,6 +37,15 @@ effect---and that simply instructing "sellers" and "choosers" to reverse
 their natural order of listing thoughts can eliminate the endowment
 effect ([Johnson et al.
 2017](https://psycnet.apa.org/record/2007-06096-001?casa_token=IPshV6sFLbwAAAAA:CBMrVKsH9gWgpUaSx4V6Ax9qiCoi5xPHi82tBYo8Id-hM_uWfeoNdKtI2-XxXSKynGqXHvt37crX5IJ3jeSEc0y7cA)).
+
+The gif below demonstrates the aspect-listing interface. You can also
+play around with this interface in the provided .qsf file:
+Aspect_Listing_Demo.qsf.
+
+![](/media/image1.gif){width="5.989361329833771in"
+height="3.2058442694663167in"}
+
+
 
 Included in this GitHub repository are resources to help you implement
 your own QT experiment. You may refer to this document as you set up
@@ -169,25 +171,22 @@ b.  **numloops\_\[accelerate \| delay \| noorder\]:** These variables
     block, the numloops_accelerate = 3. This value is set by the
     JavaScript insert attached to the click "here" to finish questions.
 
-c.  **condition**: This variable allows the experimenter to randomly
-    assign conditions to each respondent. It is set in the "Survey Flow"
-    section of Qualtrics (and not in any of the JavaScript inserts). In
-    this demo, there are three conditions:
+c. **condition**: This variable allows the experimenter to randomly
+assign conditions to each respondent. It is set in the "Survey Flow"
+section of Qualtrics (and not in any of the JavaScript inserts). In
+this demo, there are three conditions:
 
-    a.  Order manipulation conditions:
+   a. **Order manipulation conditions:**
+      - **accelerate:** Respondents first list reasons to redeem the
+        two meals in a week voucher, then list reasons to redeem the
+        one meal today voucher.
+      - **delay:** Respondents first list reasons to redeem the
+        one meal today voucher, and then list reasons to redeem the
+        two meals in a week voucher.
 
-        i.  **accelerate:** Respondents first list reasons to redeem the
-            two meals in a week voucher, then list reasons to redeem the
-            one meal today voucher.
-
-        ii. **delay:** Respondents first list reasons to redeem the one
-            meal today voucher, and then list reasons to redeem the two
-            meals in a week voucher
-
-    b.  No order manipulation condition:
-
-        i.  **control:** Respondents are free to list reasons for
-            picking either of the two vouchers, in any order.
+   b. **No order manipulation condition:**
+      - **control:** Respondents are free to list reasons for
+        picking either of the two vouchers, in any order.
 
 ## Overview of Survey Flow
 
@@ -326,8 +325,8 @@ Specifically, we probe the "proportion of impatient thoughts" per
 condition, and the standardized median rank difference, defined by Weber
 (2007) as
 
-> "SMRD = 2(MRp - MR)ln, where MRp is the median rank of patient
-> thoughts, MR\[ is the median rank of impatient thoughts, and n is the
+> "SMRD = 2(MRp - MR) \ n, where MRp is the median rank of patient
+> thoughts, MRi is the median rank of impatient thoughts, and n is the
 > total number of thoughts (Johnson et al., in press). Randomly
 > interspersed thoughts produce an SMRD of zero".
 
@@ -335,7 +334,7 @@ One important thing to note is that the data-wrangling part of the code
 relies on the unintuitive QIDs provided by Qualtrics. You will need to
 update these QIDs to match your own survey.
 
-References
+# References
 
 Weber, E. U., Johnson, E. J., Milch, K. F., Chang, H., Brodscholl, J.
 C., & Goldstein, D. G. (2007). Asymmetric discounting in intertemporal
