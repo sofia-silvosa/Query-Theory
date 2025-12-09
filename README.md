@@ -397,3 +397,8 @@ Weber, E. U., Johnson, E. J., Milch, K. F., Chang, H., Brodscholl, J. C., & Gold
 
 Johnson, E. J., Häubl, G., & Keinan, A. (2007). Aspects of endowment: a query theory of value construction. *Journal of experimental 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;psychology: Learning, memory, and cognition*, *33*(3), 461.
+
+<br>
+
+# Acknowledgments
+We thank Jordana Composto, Aya Salim, and Daniel Russman for their foundational contributions to these materials, including the Qualtrics survey and R analysis scripts, that were later adapted by Caroline Weaver and Sofia Silvosa for this GitHub repository.
