@@ -208,9 +208,9 @@ smaller-sooner" (list reasons to redeem one meal voucher today) block.
 incorrect.](media/image7.png){width="6.5in"
 height="2.348611111111111in"}
 
-# We use the same type of condition-based survey logic to control which rating block a respondent sees. Although the rating blocks may look the same, each condition requires its own version. This is important because we want the thoughts to appear in the exact same order in which a respondent listed them. This will make more sense once we walk through how the Loop & Merge feature works in both the aspect-listing and rating blocks of our task. 
+We use the same type of condition-based survey logic to control which rating block a respondent sees. Although the rating blocks may look the same, each condition requires its own version. This is important because we want the thoughts to appear in the exact same order in which a respondent listed them. This will make more sense once we walk through how the Loop & Merge feature works in both the aspect-listing and rating blocks of our task. 
 
-# These rating blocks get to the root of aspect-listing's power: after a participant lists their thoughts, you can retrieve each thought one-at-a-time and ask follow-up questions about it. 
+These rating blocks get to the root of aspect-listing's power: after a participant lists their thoughts, you can retrieve each thought one-at-a-time and ask follow-up questions about it. 
 
 # Loop-and-Merge
 
