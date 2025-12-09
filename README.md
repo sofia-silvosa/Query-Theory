@@ -41,8 +41,12 @@ The gif below demonstrates the aspect-listing interface. You can also
 play around with this interface in the provided .qsf file:
 Aspect_Listing_Demo.qsf.
 
-<img src="images/media/image1.gif"
-style="width:5.98936in;height:3.20584in" />
+<br><br>
+<p align="center">
+  <img src="media/image1.gif"
+       width = "1000">
+</p>
+<br><br>
 
 Included in this GitHub repository are resources to help you implement
 your own QT experiment. You may refer to this document as you set up
@@ -55,6 +59,8 @@ your Qualtrics and load and analyze your own data in R. We provide:
 - This guide, which explains some useful know-hows of Qualtrics and the
   implementation of our aspect-listing procedure.
 
+
+<br><br>
 # Qualtrics
 
 We provide a bare bone example of a QT aspect listing experiment built
@@ -79,20 +85,33 @@ option and the “two free meals in one week” voucher is the
 participants to list reasons to support or oppose either of the two
 voucher options, in any order of their choosing:
 
-<img src="images/media/image2.png"
-style="width:4.55854in;height:7.10597in"
-alt="A screenshot of a restaurant menu AI-generated content may be incorrect." />
+<br><br>
+<p align = "center">
+  <img src="media/image2.png"
+  width = "500" >
+</p>
+<br><br>
 
 Afterwards, in the Qualtrics block labelled “rating”, respondents are
 presented with each thought that they listed one at a time and asked the
 following:  
-<img src="images/media/image3.png" style="width:6.5in;height:2.09514in"
-alt="A screenshot of a social media post AI-generated content may be incorrect." />  
+
+<br><br>
+<p align = "center">
+  <img src="media/image3.png"
+    width = "800">
+</p>
+<br><br>
   
 And finally, they are asked:
-<img src="images/media/image4.png" style="width:6.5in;height:1.51111in"
-alt="A white background with black text AI-generated content may be incorrect." />In
-our two other conditions, we ask participants to either (a) list reasons
+<br><br>
+<p align = "center">
+  <img src="media/image4.png", 
+    width = "800">
+</p>
+<br><br>
+
+In our two other conditions, we ask participants to either (a) list reasons
 to choose the one meal voucher that would be redeemed today first, or
 (b) list reasons to choose the two meal vouchers that would be redeemed
 in a week first. Following QT logic, the condition in which a
@@ -111,13 +130,18 @@ website](https://www.qualtrics.com/support/survey-platform/getting-started/surve
 when you require more sophisticated detail about Qualtrics’ survey
 builder than this guide offers.
 
+<br><br>
 # Instructions for Qualtrics Survey Configuration
+
+<br>
 
 ## Import the. qsf survey file
 
 First, import the QT_demo.qsf file into a new project in Qualtrics. For
 step-by-step guidance, see:
 <https://www.qualtrics.com/support/survey-platform/survey-module/survey-tools/import-and-export-surveys/>
+
+<br>
 
 ## Overview of the Survey Structure
 
@@ -131,6 +155,8 @@ delayed reward” task. Participants either
 
 Note: This is a “toy” example without full experimental considerations.
 
+<br>
+
 ## Embedded Data Fields (Navigate to Survey Flow)
 
 Setting up the proper embedded data fields is essential for a smoothly
@@ -138,8 +164,12 @@ running QT survey. Issues with generating QT surveys are most often due
 to missing or incorrect data fields, or an incorrect loop-and-merge set
 up (we will cover loop-and-merge set up in point 5).
 
-<img src="images/media/image5.png" style="width:6.5in;height:3.11319in"
-alt="A screenshot of a computer program AI-generated content may be incorrect." />
+<br>
+<p align = center>
+<img src="media/image5.png"
+  width = "900">
+</p>
+<br>
 
 For now, you can ignore all “id” variables. The id variables allow you
 to capture unique participant IDs from whichever panel you collect data.
@@ -184,6 +214,8 @@ are essential for the following reasons:
         1.  **control:** Respondents are free to list reasons for
             picking either of the two vouchers, in any order.
 
+<br><br>
+
 ## Overview of Survey Flow
 
 Now, you should navigate to Survey Flow.  
@@ -192,16 +224,25 @@ In this demo, the condition variable is assigned using a Qualtrics
 **Randomizer** element in the Survey Flow. Each respondent is randomly
 assigned to one of the three conditions.
 
-<img src="images/media/image6.png" style="width:6.5in;height:3.125in"
-alt="A screenshot of a computer AI-generated content may be incorrect." />
+<br>
+<p align = "center">
+  <img src="media/image6.png"
+    width = "900">
+</p>
+<br>
 
 After randomly assigning a condition to each respondent, you can order
 blocks corresponding to each condition’s intended sequence. For example,
 for the ‘accelerate’ condition, the “list larger-later” (list reasons to
 redeem two meal vouchers in one week) block appears before the “list
 smaller-sooner” (list reasons to redeem one meal voucher today) block.
-<img src="images/media/image7.png" style="width:6.5in;height:2.34861in"
-alt="A screenshot of a computer AI-generated content may be incorrect." />
+
+<br>
+<p align = "center">
+  <img src="media/image7.png"
+  width = "900">
+</p>
+<br>
 
 We use the same type of condition-based survey logic to control which
 rating block a respondent sees. Although the rating blocks may look the
@@ -211,8 +252,9 @@ respondent listed them. This will make more sense once we walk through
 how the Loop & Merge feature works in both the aspect-listing and rating
 blocks of our task.
 
-# These rating blocks get to the root of aspect-listing’s power: after a participant lists their thoughts, you can retrieve each thought one-at-a-time and ask follow-up questions about it 
+These rating blocks get to the root of aspect-listing’s power: after a participant lists their thoughts, you can retrieve each thought one-at-a-time and ask follow-up questions about it 
 
+<br><br>
 # Loop-and-Merge
 
 Aspect-listing relies on **Loop & Merge** functionality.  
@@ -235,9 +277,13 @@ blocks, these tables will be left blank. For the rating blocks, you will
 need to set up your table accordingly. For example, in the Qualtrics
 demo, for the delay rating block, the loop & merge table shows the
 following:  
-  
-<img src="images/media/image8.png" style="width:4.34722in;height:6in"
-alt="A screenshot of a computer AI-generated content may be incorrect." />
+
+<br>
+<p align = "center">
+  <img src="media/image8.png"
+    width = "400">
+</p>
+<br>
 
 **Where:**
 
@@ -251,38 +297,38 @@ Because respondents in the “delay” condition listed thoughts in support
 of the smaller-sooner option first, we show them these thoughts first,
 one at a time.
 
+<br>
+
 If your project has different question IDs, **replace the numeric part
 of the QIDs** in the table with your survey’s IDs.
 
-<img src="images/media/image9.png"
-style="width:2.06944in;height:4.41667in"
-alt="A screenshot of a phone AI-generated content may be incorrect." />Note:
-Within Qualtrics, editing the name of a question does **not** change its
-QID, but duplicating/re-creating/importing questions can assign **new
-QIDs**. **The QIDs might not be the same as the question name!** You
-will need to update the loop & merge table accordingly. You can view
-each question’s QID by selecting the Show internal IDs tool:
+<br>
+<table>
+  <tr>
+    <td width="260" valign="top">
+      <img src="media/image9.png" width="250">
+    </td>
+    <td valign="top">
 
-After setting up your Loop & Merge tables, you can reference a
-respondent’s thoughts one at a time in the rating block. If your table
-structure looks like ours, the thoughts will be stored in the second
-column of the table. You can reference them using the Qualtrics piped
-text “\${lm://Field/2}”.
+<strong>Note:</strong> Within Qualtrics, editing the name of a question does <strong>not</strong> change its
+QID, but duplicating, re-creating, or importing questions can assign <strong>new QIDs</strong>.
+<strong>The QIDs might not be the same as the question name.</strong> To show the internal QIDs, navigate to the toolbar and select "Show internal IDs" (see the image to the left).
 
-**Respondent’s will be able to answer this question for each thought
-they listed.**
+  </tr>
+</table>
 
-**For the thought in the first row, display “Here is the first thought
-you typed in:” . If the first row is blank, this rating block will
-terminate.**
+<br>
 
-**For thoughts not in the first-row display “Here is the next thought
-you typed in:”.  
-At the first blank row, this rating block will terminate.**
+After setting up your Loop & Merge tables, you can reference a respondent’s thoughts one at a time in the rating block. If your table structure looks like ours, the thoughts will be stored in the second column of the table. You can reference them using the Qualtrics piped text `${lm://Field/2}`. 
 
-**“\${lm://Field/2}” refers to column 2 of your table, where a
-respondent’s thoughts are stored**
+<br>
+<p align = "center">
+<img src = "media/image10.png"
+width = "1000">
+</p>
+<br>
 
+<br><br>
 # JavaScript Inserts
 
 There are three essential JavaScript inserts included in the GitHub
@@ -306,10 +352,14 @@ also change its name in these three JavaScript inserts.
 We will spare you the details of the JavaScript. The gif below shows
 where these JavaScript inserts should be placed.
 
-<img src="images/media/image11.gif"
-style="width:6.5in;height:5.69722in" />
+<br><br>
+<p align = "center">
+  <img src="media/image11.gif"
+    width = "900"/>
+</p>
+<br><br>
 
-# 
+<br>
 
 # Analysis (in R)
 
@@ -338,16 +388,12 @@ One important thing to note is that the data-wrangling part of the code
 relies on the unintuitive QIDs provided by Qualtrics. You will need to
 update these QIDs to match your own survey.
 
-References
+<br>
 
-Weber, E. U., Johnson, E. J., Milch, K. F., Chang, H., Brodscholl, J.
-C., & Goldstein, D. G. (2007). Asymmetric
+# References
 
-discounting in intertemporal choice: A query-theory account.
-*Psychological science*, *18*(6), 516-523.
+Weber, E. U., Johnson, E. J., Milch, K. F., Chang, H., Brodscholl, J. C., & Goldstein, D. G. (2007). Asymmetric discounting in intertemporal 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;choice: A query-theory account. *Psychological science*, *18*(6), 516-523.
 
-Johnson, E. J., Häubl, G., & Keinan, A. (2007). Aspects of endowment: a
-query theory of value construction.
-
-*Journal of experimental psychology: Learning, memory, and cognition*,
-*33*(3), 461.
+Johnson, E. J., Häubl, G., & Keinan, A. (2007). Aspects of endowment: a query theory of value construction. *Journal of experimental 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;psychology: Learning, memory, and cognition*, *33*(3), 461.
